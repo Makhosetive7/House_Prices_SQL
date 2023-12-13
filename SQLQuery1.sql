@@ -22,86 +22,73 @@ SELECT SquareFeet, Bedrooms, Bathrooms, Neighborhood, YearBuilt, Price
 FROM Local_housing_prices..Prices_dataset
 WHERE Neighborhood = 'Urban';
 
---Number of house built in rural areas(Neighborhood)
-SELECT count(*) As Total_number_of_rural_houses
+--Number of house built (Neighborhood)
+SELECT Neighborhood, COUNT(*) As Total_number_houses
 FROM Local_housing_prices..Prices_Dataset
-WHERE Neighborhood = 'Rural'
+GROUP BY Neighborhood
+ORDER BY Neighborhood;
 
---Number of house built in urban areas(Neighborhood)
-SELECT count(*) As Total_number_of_urban_houses
-FROM Local_housing_prices..Prices_Dataset
+--Total number of Houses built every year per Urban Neighborhood
+SELECT  YearBuilt, COUNT(*) AS NumberOfHouses
+FROM Local_housing_prices..Prices_dataset
 WHERE Neighborhood = 'Urban'
+GROUP BY YearBuilt
+ORDER BY YearBuilt;
 
---List of Houses built in the last 10years
-Select SquareFeet, Bedrooms, Bathrooms, Neighborhood, YearBuilt, Price  As Houses_listed_in_past_10yrs
-FROM Local_housing_prices..Prices_Dataset
-WHERE YearBuilt between 2013 and 2023
-ORDER BY YearBuilt Asc
+--Total number of Houses built every year per Rural Neighborhood
+SELECT  YearBuilt, COUNT(*) AS NumberOfHouses
+FROM Local_housing_prices..Prices_dataset
+WHERE Neighborhood = 'Rural'
+GROUP BY YearBuilt
+ORDER BY YearBuilt;
+
+--Total houses built in Neighborhood every year
+SELECT Neighborhood, YearBuilt, COUNT(*) AS NumberOfHouses
+FROM Local_housing_prices..Prices_dataset
+GROUP BY YearBuilt, Neighborhood
+ORDER BY YearBuilt, Neighborhood;
 
 --Total number of Houses listed in the last 10years
-Select count(*) As Houses_listed_in_past_10yrs
+SELECT Neighborhood, COUNT(*) As Houses_listed_in_past_10yrs
 FROM Local_housing_prices..Prices_Dataset
-WHERE YearBuilt between 2013 and 2023
+WHERE YearBuilt BETWEEN 2013 AND 2023
+GROUP BY Neighborhood;
 
---List of Urban Houses built in the last 10years
-SELECT SquareFeet, Bedrooms, Bathrooms, Neighborhood, YearBuilt, Price  As Urban_Houses_in_past_10yrs
-FROM Local_housing_prices..Prices_Dataset
-WHERE Neighborhood = 'Urban' and YearBuilt between 2013 and 2023
-ORDER BY YearBuilt Asc
+--Total SquareFeet by Neighborhood
+SELECT Neighborhood, SUM(SquareFeet) AS TotalSquareFeet
+FROM Local_housing_prices..Prices_dataset
+GROUP BY Neighborhood;
 
---Number of Rural houses built in the last 10 years
-SELECT SquareFeet, Bedrooms, Bathrooms, Neighborhood, YearBuilt, Price  As Urban_Houses_in_past_10yrs
+--Average price per  Neighborhood
+SELECT Neighborhood,  round(Avg(Price), 3) As Urban_house_average_price
 FROM Local_housing_prices..Prices_Dataset
-WHERE Neighborhood = 'Rural' and YearBuilt between 2013 and 2023
-ORDER BY YearBuilt Asc
-
---Average price for Urban houses
-SELECT round(Avg(Price), 3) As Urban_house_average_price
-FROM Local_housing_prices..Prices_Dataset
-WHERE Neighborhood = 'Urban'
-
---Average price for Rural houses
-SELECT round(Avg(Price), 3) As Rural_house_average_price
-FROM Local_housing_prices..Prices_Dataset
-WHERE Neighborhood = 'Rural'
+GROUP BY  Neighborhood
+ORDER BY  Neighborhood
 
 --Average prices grouped by number of Bedrooms
-SELECT Bedrooms, AVG(Price) AS AveragePrice
+SELECT Neighborhood, Bedrooms, AVG(Price) AS AveragePrice
 FROM Local_housing_prices..Prices_dataset
-GROUP BY Bedrooms;
+GROUP BY Neighborhood, Bedrooms
+ORDER BY Neighborhood, Bedrooms;
+
 
 --Average prices grouped by number of Bathrooms
-SELECT Bathrooms, AVG(Price) AS AveragePrice
+SELECT Neighborhood, Bathrooms, AVG(Price) AS AveragePrice
 FROM Local_housing_prices..Prices_dataset
-GROUP BY Bathrooms;
-
---Average SquareFeet for all Houses
-SELECT AVG(SquareFeet) AS AverageSquareFeet
-FROM Local_housing_prices..Prices_dataset;
+GROUP BY Neighborhood, Bathrooms
+ORDER BY Neighborhood, Bathrooms;
 
 --Average Average SquareFeet per Neighborhood
 SELECT Neighborhood, AVG(SquareFeet) AS AverageSquareFeet
 FROM Local_housing_prices..Prices_dataset
 GROUP BY Neighborhood;
 
---Most expensive House in Urban Neighbouhood
-SELECT max(Price) as Most_expensive_urban_house
+--Average Price by Neighborhood
+SELECT Neighborhood, AVG(Price) AS AveragePrice
 FROM Local_housing_prices..Prices_dataset
-WHERE Neighborhood = 'Urban'
+GROUP BY Neighborhood;
 
---Least expensive House in Urban Neighbouhood
-SELECT min(Price) as Least_expensive_urban_house
-FROM Local_housing_prices..Prices_dataset
-WHERE Neighborhood = 'Urban'
-
---Most expensive House in Rural Neighbouhood
-SELECT max(Price) as Most_expensive_Rural_house
-FROM Local_housing_prices..Prices_dataset
-WHERE Neighborhood = 'Rural'
-
---Least expensive House in Rural Neighbouhood
-SELECT min(Price) as Least_expensive_Rural_house
-FROM Local_housing_prices..Prices_dataset
-WHERE Neighborhood = 'Rural'
-
-
+--Most Expensive House in Each Neighborhood
+  SELECT Neighborhood, MAX(Price) AS MostExpensiveHouse
+  FROM Local_housing_prices..Prices_dataset
+  GROUP BY Neighborhood;
